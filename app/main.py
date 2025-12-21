@@ -1,18 +1,34 @@
 from __future__ import annotations
 
+from dotenv import load_dotenv
+from pathlib import Path
+
+# repo root / app / .env (same folder as this file)
+load_dotenv(dotenv_path=Path(__file__).resolve().parent / ".env")
+
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Any, Dict
 
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field as PydField
 from sqlmodel import Session, select
 
 from .db import init_db, get_session
 from .models import Task, Availability
 from .planner import TaskLite, generate_week_plan
+from .ai_gemini import explain_plan
 
 
 app = FastAPI(title="UF Study Planner API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # dev only
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.on_event("startup")
@@ -54,6 +70,11 @@ class PlanRequest(BaseModel):
     user_id: str
     start_date: Optional[str] = None  # ISO date; optional
     days: int = PydField(default=7, ge=1, le=14)
+
+
+class AIExplainPlanRequest(BaseModel):
+    tasks: List[Dict[str, Any]]
+    plan: List[Dict[str, Any]]
 
 
 # ----- Endpoints -----
@@ -190,3 +211,16 @@ def generate_plan(payload: PlanRequest, session: Session = Depends(get_session))
         days=payload.days,
     )
     return {"userId": payload.user_id, "plan": plan}
+
+
+@app.post("/ai/explain-plan")
+def ai_explain_plan(payload: AIExplainPlanRequest):
+    """
+    Uses Gemini to explain WHY the generated plan is structured the way it is.
+    Key is read from GEMINI_API_KEY in your .env (loaded via load_dotenv()).
+    """
+    try:
+        text = explain_plan(tasks=payload.tasks, plan=payload.plan)
+        return {"explanation": text}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "UF Study Planner",
+    "slug": "uf-study-planner",
+    "scheme": "ufstudyplanner",
+
+    "icon": "./assets/images/readerLogo.png",
+
+    "android": {
+      "package": "com.ricardobezi.ufstudyplanner",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/bookForeground.png",
+        "backgroundColor": "#101820"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false
+    },
+
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/readerLogo.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#101820",
+          "dark": {
+            "backgroundColor": "#101820"
+          }
+        }
+      ]
+    ]
+  }
+}
