@@ -3,9 +3,7 @@
     "name": "UF Study Planner",
     "slug": "uf-study-planner",
     "scheme": "ufstudyplanner",
-
     "icon": "./assets/images/readerLogo.png",
-
     "android": {
       "package": "com.ricardobezi.ufstudyplanner",
       "adaptiveIcon": {
@@ -15,7 +13,6 @@
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
     },
-
     "plugins": [
       "expo-router",
       [
@@ -30,6 +27,12 @@
           }
         }
       ]
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "7d0b67bd-cd5a-4e8d-afa4-16576d07706a"
+      }
+    }
   }
 }
