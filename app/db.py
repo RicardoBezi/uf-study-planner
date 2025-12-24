@@ -4,7 +4,7 @@ DATABASE_URL = "sqlite:///./studyplanner.db"
 engine = create_engine(
     DATABASE_URL,
     echo=False,
-    connect_args={"check_same_thread": False},  # needed for sqlite + threads
+    connect_args={"check_same_thread": False},  
 )
 
 def init_db() -> None:
